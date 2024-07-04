@@ -1,25 +1,31 @@
 package com.cydeo.controller;
 
 import com.cydeo.dto.ResponseWrapper;
+import com.cydeo.dto.RoleDTO;
 import com.cydeo.dto.UserDTO;
+import com.cydeo.service.RoleService;
 import com.cydeo.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
+    private final RoleService roleService;
 
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<ResponseWrapper> getUsers() {
         List<UserDTO> userList = userService.listAllUsers();
 

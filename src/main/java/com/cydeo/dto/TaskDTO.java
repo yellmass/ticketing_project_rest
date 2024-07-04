@@ -1,6 +1,7 @@
 package com.cydeo.dto;
 
 import com.cydeo.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TaskDTO {
 
+    @JsonIgnore
     private Long id;
 
     @NotNull
@@ -29,6 +31,7 @@ public class TaskDTO {
     private String taskDetail;
 
     private Status taskStatus;
+
     private LocalDate assignedDate;
 
 }

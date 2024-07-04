@@ -28,15 +28,10 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<ResponseWrapper> getProjects(){
         List<ProjectDTO> projects = projectService.listAllProjectDetails();
-        List<UserDTO> managers = userService.listAllByRole("manager");
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("projects", projects);
-        data.put("managers", managers);
 
         ResponseWrapper wrapper = new ResponseWrapper(
                 "All the projects retrieved.",
-                data,
+                projects,
                 HttpStatus.OK
         );
 
