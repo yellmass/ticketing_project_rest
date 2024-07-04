@@ -19,8 +19,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<ResponseWrapper> getUsers(){
+    @GetMapping("")
+    public ResponseEntity<ResponseWrapper> getUsers() {
         List<UserDTO> userList = userService.listAllUsers();
 
         ResponseWrapper wrapper = new ResponseWrapper(
@@ -37,11 +37,11 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<ResponseWrapper> getUserByUsername(@PathVariable("username") String username){
+    public ResponseEntity<ResponseWrapper> getUserByUsername(@PathVariable("username") String username) {
         UserDTO userDTO = userService.findByUserName(username);
 
         ResponseWrapper wrapper = new ResponseWrapper(
-                "User \'"+ username  +"\' is retrieved successfully",
+                "User \'" + username + "\' is retrieved successfully",
                 userDTO,
                 HttpStatus.OK
         );
@@ -54,11 +54,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO userDTO) {
         userService.save(userDTO);
 
         ResponseWrapper wrapper = new ResponseWrapper(
-                "User \'"+ userDTO.getUserName()  +"\' is created successfully",
+                "User \'" + userDTO.getUserName() + "\' is created successfully",
+                userDTO,
                 HttpStatus.CREATED
         );
 
@@ -67,12 +68,13 @@ public class UserController {
                 .header("Company", "Cydeo")
                 .body(wrapper);
     }
+
     @PutMapping
-    public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO userDTO) {
         UserDTO user = userService.update(userDTO);
 
         ResponseWrapper wrapper = new ResponseWrapper(
-                "User \'"+ user.getUserName()  +"\' is updated successfully",
+                "User \'" + user.getUserName() + "\' is updated successfully",
                 HttpStatus.OK
         );
 
@@ -84,16 +86,22 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
-    public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username){
-        userService.delete(username);
+    public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username) {
+        boolean isDeleted = userService.delete(username);
 
-        ResponseWrapper wrapper = new ResponseWrapper(
-                "User \'"+ username  +"\' is deleted successfully",
-                HttpStatus.OK
-        );
+        ResponseWrapper wrapper = isDeleted ? new ResponseWrapper(
+                "User \'" + username + "\' is deleted successfully",
+                HttpStatus.OK) : new ResponseWrapper(
+                "User \'" + username + "\' can not be deleted",
+                HttpStatus.FORBIDDEN);
 
-        return ResponseEntity
+        return isDeleted
+                ? ResponseEntity
                 .status(HttpStatus.OK)
+                .header("Company", "Cydeo")
+                .body(wrapper)
+                : ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .header("Company", "Cydeo")
                 .body(wrapper);
     }
