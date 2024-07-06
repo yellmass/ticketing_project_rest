@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class UserController {
     }
 
     @GetMapping
+    @RolesAllowed({"Manager","Admin"})
     public ResponseEntity<ResponseWrapper> getUsers() {
         List<UserDTO> userList = userService.listAllUsers();
 
@@ -43,6 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
+    @RolesAllowed({"Manager","Admin"})
     public ResponseEntity<ResponseWrapper> getUserByUsername(@PathVariable("username") String username) {
         UserDTO userDTO = userService.findByUserName(username);
 
@@ -60,6 +63,7 @@ public class UserController {
     }
 
     @PostMapping
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO userDTO) {
         userService.save(userDTO);
 
@@ -76,6 +80,7 @@ public class UserController {
     }
 
     @PutMapping
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO userDTO) {
         UserDTO user = userService.update(userDTO);
 
@@ -92,6 +97,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username) {
         boolean isDeleted = userService.delete(username);
 
