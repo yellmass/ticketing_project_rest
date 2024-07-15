@@ -1,5 +1,6 @@
 package com.cydeo.controller;
 
+import com.cydeo.annotation.DefaultExceptionMessage;
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.ResponseWrapper;
 import com.cydeo.dto.UserDTO;
@@ -27,7 +28,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    @RolesAllowed("Manager")
+    @RolesAllowed({"Manager","Admin"})
+    @DefaultExceptionMessage(defaultMessage = "Projects cannot be retrieved")
     public ResponseEntity<ResponseWrapper> getProjects(){
         List<ProjectDTO> projects = projectService.listAllProjectDetails();
 

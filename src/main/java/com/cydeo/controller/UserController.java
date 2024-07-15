@@ -1,10 +1,14 @@
 package com.cydeo.controller;
 
+import com.cydeo.annotation.DefaultExceptionMessage;
 import com.cydeo.dto.ResponseWrapper;
 import com.cydeo.dto.RoleDTO;
 import com.cydeo.dto.UserDTO;
+import com.cydeo.exception.TicketingProjectException;
 import com.cydeo.service.RoleService;
 import com.cydeo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Tag(name = "UserController", description = "User API")
 public class UserController {
     private final UserService userService;
     private final RoleService roleService;
@@ -28,6 +33,7 @@ public class UserController {
 
     @GetMapping
     @RolesAllowed({"Manager","Admin"})
+    @Operation(summary = "Get users")
     public ResponseEntity<ResponseWrapper> getUsers() {
         List<UserDTO> userList = userService.listAllUsers();
 
@@ -46,6 +52,7 @@ public class UserController {
 
     @GetMapping("/{username}")
     @RolesAllowed({"Manager","Admin"})
+    @Operation(summary = "Get user by username")
     public ResponseEntity<ResponseWrapper> getUserByUsername(@PathVariable("username") String username) {
         UserDTO userDTO = userService.findByUserName(username);
 
@@ -64,6 +71,7 @@ public class UserController {
 
     @PostMapping
     @RolesAllowed("Admin")
+    @Operation(summary = "Create user")
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO userDTO) {
         userService.save(userDTO);
 
@@ -81,6 +89,8 @@ public class UserController {
 
     @PutMapping
     @RolesAllowed("Admin")
+    @Operation(summary = "Update user")
+    @DefaultExceptionMessage(defaultMessage = "Bad request!")
     public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO userDTO) {
         UserDTO user = userService.update(userDTO);
 
@@ -98,22 +108,16 @@ public class UserController {
 
     @DeleteMapping("/{username}")
     @RolesAllowed("Admin")
-    public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username) {
-        boolean isDeleted = userService.delete(username);
+    @Operation(summary = "Delete user")
+    public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username) throws TicketingProjectException {
+        userService.delete(username);
 
-        ResponseWrapper wrapper = isDeleted ? new ResponseWrapper(
+        ResponseWrapper wrapper = new ResponseWrapper(
                 "User \'" + username + "\' is deleted successfully",
-                HttpStatus.OK) : new ResponseWrapper(
-                "User \'" + username + "\' can not be deleted",
-                HttpStatus.FORBIDDEN);
+                HttpStatus.OK);
 
-        return isDeleted
-                ? ResponseEntity
+        return ResponseEntity
                 .status(HttpStatus.OK)
-                .header("Company", "Cydeo")
-                .body(wrapper)
-                : ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
                 .header("Company", "Cydeo")
                 .body(wrapper);
     }
