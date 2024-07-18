@@ -1,6 +1,7 @@
 package com.cydeo.controller;
 
 import com.cydeo.annotation.DefaultExceptionMessage;
+import com.cydeo.annotation.ExecutionTime;
 import com.cydeo.dto.ResponseWrapper;
 import com.cydeo.dto.RoleDTO;
 import com.cydeo.dto.UserDTO;
@@ -34,6 +35,7 @@ public class UserController {
     @GetMapping
     @RolesAllowed({"Manager","Admin"})
     @Operation(summary = "Get users")
+    @ExecutionTime
     public ResponseEntity<ResponseWrapper> getUsers() {
         List<UserDTO> userList = userService.listAllUsers();
 
@@ -53,6 +55,7 @@ public class UserController {
     @GetMapping("/{username}")
     @RolesAllowed({"Manager","Admin"})
     @Operation(summary = "Get user by username")
+    @ExecutionTime
     public ResponseEntity<ResponseWrapper> getUserByUsername(@PathVariable("username") String username) {
         UserDTO userDTO = userService.findByUserName(username);
 
@@ -72,6 +75,7 @@ public class UserController {
     @PostMapping
     @RolesAllowed("Admin")
     @Operation(summary = "Create user")
+    @ExecutionTime
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO userDTO) {
         userService.save(userDTO);
 
@@ -91,6 +95,7 @@ public class UserController {
     @RolesAllowed("Admin")
     @Operation(summary = "Update user")
     @DefaultExceptionMessage(defaultMessage = "Bad request!")
+    @ExecutionTime
     public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO userDTO) {
         UserDTO user = userService.update(userDTO);
 
@@ -109,6 +114,7 @@ public class UserController {
     @DeleteMapping("/{username}")
     @RolesAllowed("Admin")
     @Operation(summary = "Delete user")
+    @ExecutionTime
     public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username) throws TicketingProjectException {
         userService.delete(username);
 
