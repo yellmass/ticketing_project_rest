@@ -67,7 +67,7 @@ public class ProjectController {
         projectService.save(projectDTO);
 
         ResponseWrapper wrapper = new ResponseWrapper(
-                "Project is created.",
+                "Project is successfully created.",
                 HttpStatus.CREATED
         );
 
@@ -83,7 +83,7 @@ public class ProjectController {
         projectService.update(projectDTO);
 
         ResponseWrapper wrapper = new ResponseWrapper(
-                "Project is updated.",
+                "Project is successfully updated.",
                 HttpStatus.OK
         );
 
@@ -98,7 +98,7 @@ public class ProjectController {
         projectService.delete(code);
 
         ResponseWrapper wrapper = new ResponseWrapper(
-                "Project is deleted.",
+                "Project is successfully deleted.",
                 HttpStatus.OK
         );
 
